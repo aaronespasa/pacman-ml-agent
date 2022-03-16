@@ -1,6 +1,6 @@
 import arff
 
-f1 = open('filter_data_pacman_manual1.arff', "a")
+f1 = open('test_othermaps_keyboard_present.arff', "a")
 f2 = open('filter_data_pacman_manual2.arff', "a")
 
 for row in arff.load('all_data_pacman.arff'):

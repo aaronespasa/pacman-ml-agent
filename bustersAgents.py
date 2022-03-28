@@ -19,6 +19,7 @@ import util
 # from game import Agent
 from game import Directions
 from keyboardAgents import KeyboardAgent
+from wekaI import Weka
 import inference
 import busters
 
@@ -74,6 +75,8 @@ class BustersAgent(object):
         self.inferenceModules = [inferenceType(a) for a in ghostAgents]
         self.observeEnable = observeEnable
         self.elapseTimeEnable = elapseTimeEnable
+        self.weka = Weka()
+        self.weka.start_jvm()
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
@@ -103,7 +106,20 @@ class BustersAgent(object):
         return self.chooseAction(gameState)
 
     def chooseAction(self, gameState):
-        "By default, a BustersAgent just stops.  This should be overridden."
+        "Action the PacMan takes"
+        directionX = [...]
+        direction = self.weka.predict(
+                        "./models/classification/random-forest.model",
+                        directionX,
+                        "./data/present/training_tutorial1.arff")
+        # convert the direction into a proper direction
+        # ...
+
+        futureScoreX = [...]
+        futureScore = self.weka.predict(
+                        "./models/prediction/multilayer-perceptron.model",
+                        futureScoreX,
+                        "./data/future/training_tutorial1.arff")
         return Directions.STOP
 
 class BustersKeyboardAgent(BustersAgent, KeyboardAgent):

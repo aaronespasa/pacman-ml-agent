@@ -84,8 +84,8 @@ class BustersAgent(object):
         self.possibleDirections = 0
         
         # Start a Java VM using Weka
-        # self.weka = Weka()
-        # self.weka.start_jvm()
+        self.weka = Weka()
+        self.weka.start_jvm()
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
@@ -146,25 +146,36 @@ class BustersAgent(object):
         distFood = 0 if gameState.getDistanceNearestFood() == None else \
                     gameState.getDistanceNearestFood()
         
+        # directionX = [
+        #     self.countActions,
+        #     pacmanX,
+        #     pacmanY,
+        #     self.possibleDirections,
+        #     ghostX,
+        #     ghostY,
+        #     self.nearestGhostDistance,
+        #     gameState.getNumFood(),
+        #     distFood,
+        #     gameState.getScore()
+        # ]
+
+        # directionLetter = self.weka.predict(
+        #                     "./models/classification/random-forest.model",
+        #                     directionX,
+        #                     "./data/present/training_tutorial1.arff")
+        
         directionX = [
-            self.countActions,
             pacmanX,
             pacmanY,
             self.possibleDirections,
             ghostX,
             ghostY,
-            self.nearestGhostDistance,
-            gameState.getNumFood(),
-            distFood,
-            gameState.getScore()
+            self.nearestGhostDistance
         ]
-
-        print(directionX)
-
         directionLetter = self.weka.predict(
-                            "./models/classification/random-forest.model",
+                            "./models/classification_tests/j48.model",
                             directionX,
-                            "./data/present/training_tutorial1.arff")
+                            "./training_tutorial1_samemap.arff")
         # convert the direction {N,S,W,E,X} into a proper direction
         directionsMap = {
             "N": Directions.NORTH,
@@ -176,7 +187,7 @@ class BustersAgent(object):
         direction = directionsMap.get(directionLetter, Directions.STOP)
 
         if direction not in legal:
-            return Directions.STOP
+            return legal[0]
         
         #futureScoreX = [...]
         # futureScore = self.weka.predict(

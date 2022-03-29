@@ -699,14 +699,15 @@ class Game(object):
                 # primer set: que va a ser mejor en principio
                 # segundo set: que va a ser peor en principio
                 action = agent.getAction(observation)
+                
                 import bustersAgents
                 if isinstance(agent, bustersAgents.BasicAgentAA) or isinstance(agent, bustersAgents.BustersKeyboardAgent):
                     f = open(self.filename, "a")
-                    self.score = agent.getScoreFromAgent(observation)
+                    # self.score = agent.getScoreFromAgent(observation)
                     if os.path.getsize(self.filename) > 0:
                         # file not empty
-                        if agent.getNumAction() > 1:
-                            f.write(agent.printFutureData(observation))
+                        # if agent.getNumAction() > 1:
+                        #     f.write(agent.printFutureData(observation))
                         f.write(agent.printLineData(observation))
                     else:
                         # file empty -> insert arff header
@@ -714,17 +715,12 @@ class Game(object):
 
                         # attributes -> key: name; value: data type
                         attributes = {
-                            "numActions":           "NUMERIC",
                             "pacmanX":              "NUMERIC",
                             "pacmanY":              "NUMERIC",
                             "directionPossible":    "NUMERIC",
                             "ghostX":               "NUMERIC",
                             "ghostY":               "NUMERIC",
                             "nearestGhostDistance": "NUMERIC",
-                            "numFood":              "NUMERIC",
-                            "distFood":             "NUMERIC",
-                            "score":                "NUMERIC",
-                            "futureScore":          "NUMERIC",
                             "directionTaken":       "{N,S,W,E,X}"
                         }
 
@@ -777,8 +773,7 @@ class Game(object):
                     self.unmute()
                     return
         self.display.finish()
-        # score + X
         
-        f = open(self.filename, "a")
-        f.write(str(self.score) + "," + "X\n")
-        f.close()
+        # f = open(self.filename, "a")
+        # f.write(str(self.score) + "," + "X\n")
+        # f.close()

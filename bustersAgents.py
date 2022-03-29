@@ -22,6 +22,7 @@ from keyboardAgents import KeyboardAgent
 from wekaI import Weka
 import inference
 import busters
+import random
 
 class NullGraphics(object):
     "Placeholder for graphics"
@@ -83,8 +84,8 @@ class BustersAgent(object):
         self.possibleDirections = 0
         
         # Start a Java VM using Weka
-        self.weka = Weka()
-        self.weka.start_jvm()
+        # self.weka = Weka()
+        # self.weka.start_jvm()
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
@@ -141,7 +142,7 @@ class BustersAgent(object):
         ghostX, ghostY = self.nearestGhostPosition
         ###################################################################
 
-        pacmanX, pacmanY = gameState.getPacmanPosition()[1:-1].split(", ")
+        pacmanX, pacmanY = gameState.getPacmanPosition()
         distFood = 0 if gameState.getDistanceNearestFood() == None else \
                     gameState.getDistanceNearestFood()
         
@@ -158,6 +159,8 @@ class BustersAgent(object):
             gameState.getScore()
         ]
 
+        print(directionX)
+
         directionLetter = self.weka.predict(
                             "./models/classification/random-forest.model",
                             directionX,
@@ -171,6 +174,9 @@ class BustersAgent(object):
             "X": Directions.STOP
         }
         direction = directionsMap.get(directionLetter, Directions.STOP)
+
+        if direction not in legal:
+            return Directions.STOP
         
         #futureScoreX = [...]
         # futureScore = self.weka.predict(
@@ -484,17 +490,18 @@ class BasicAgentAA(BustersAgent):
             self.directionTaken = gameState.data.agentStates[0].getDirection()[0]
         
         return (
-            str(self.countActions) + "," + 
+            # str(self.countActions) + "," + 
             ",".join(str(gameState.getPacmanPosition())[1:-1].split(", ")) + "," +
             str(self.possibleDirections) + "," +
             ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
             str(self.nearestGhostDistance) + "," +
-            str(gameState.getNumFood()) + "," +
-            str(
-                0 if gameState.getDistanceNearestFood() == None else
-                gameState.getDistanceNearestFood()
-            ) + "," +
-            str(gameState.getScore()) + ","
+            # str(gameState.getNumFood()) + "," +
+            # str(
+            #     0 if gameState.getDistanceNearestFood() == None else
+            #     gameState.getDistanceNearestFood()
+            # ) + "," +
+            # str(gameState.getScore()) + ","
+            str(self.directionTaken) + "\n"
         )
     
     def printFutureData(self, gameState):

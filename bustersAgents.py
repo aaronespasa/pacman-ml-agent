@@ -75,6 +75,14 @@ class BustersAgent(object):
         self.inferenceModules = [inferenceType(a) for a in ghostAgents]
         self.observeEnable = observeEnable
         self.elapseTimeEnable = elapseTimeEnable
+        
+        # Variables to perform inference
+        self.countActions = 0
+        self.nearestGhostPosition = tuple()
+        self.nearestGhostDistance = float('inf')
+        self.possibleDirections = 0
+        
+        # Start a Java VM using Weka
         self.weka = Weka()
         self.weka.start_jvm()
 
@@ -95,19 +103,61 @@ class BustersAgent(object):
 
     def getAction(self, gameState):
         "Updates beliefs, then chooses an action based on updated beliefs."
-        #for index, inf in enumerate(self.inferenceModules):
-        #    if not self.firstMove and self.elapseTimeEnable:
-        #        inf.elapseTime(gameState)
-        #    self.firstMove = False
-        #    if self.observeEnable:
-        #        inf.observeState(gameState)
-        #    self.ghostBeliefs[index] = inf.getBeliefDistribution()
-        #self.display.updateDistributions(self.ghostBeliefs)
         return self.chooseAction(gameState)
 
     def chooseAction(self, gameState):
         "Action the PacMan takes"
-        directionX = [...]
+
+        livingGhosts = gameState.getLivingGhosts()
+        legal = [a for a in gameState.getLegalPacmanActions()]
+
+        # "{N, S, W, E, X}" -> in binary format
+        self.possibleDirections = 0
+        for direction in legal:
+            # Directions.NORTH, Directions.EAST, Directions.SOUTH, Directions.WEST
+            if direction == Directions.NORTH: self.possibleDirections += 16
+            if direction == Directions.SOUTH: self.possibleDirections += 8
+            if direction == Directions.WEST: self.possibleDirections += 4
+            if direction == Directions.EAST: self.possibleDirections += 2
+            if direction == Directions.STOP: self.possibleDirections += 1
+        self.countActions = self.countActions + 1
+
+        ####### Sort the ghosts based on the distance to the pacman #######
+        ###################################################################
+        ghostDistancesDict = {}
+        ghostDistances = gameState.data.ghostDistances
+        for i, ghostDistance in enumerate(ghostDistances):
+            # the first "ghost" is the pacman, so we avoid it doing i+1
+            if livingGhosts[i+1] == True:
+                ghostDistancesDict[i] = ghostDistance
+        
+        sortedDistances = dict(sorted(ghostDistancesDict.items(), key=lambda item: item[1]))
+
+        nearestGhostKey = next(iter(sortedDistances)) # get the first element of the dict
+        shortestDistance = sortedDistances[nearestGhostKey]
+        self.nearestGhostDistance = shortestDistance
+        nearestGhostPosition = gameState.getGhostPositions()[nearestGhostKey]
+        self.nearestGhostPosition = nearestGhostPosition
+        ghostX, ghostY = self.nearestGhostPosition
+        ###################################################################
+
+        pacmanX, pacmanY = gameState.getPacmanPosition()[1:-1].split(", ")
+        distFood = 0 if gameState.getDistanceNearestFood() == None else \
+                    gameState.getDistanceNearestFood()
+        
+        directionX = [
+            self.countActions,
+            pacmanX,
+            pacmanY,
+            self.possibleDirections,
+            ghostX,
+            ghostY,
+            self.nearestGhostDistance,
+            gameState.getNumFood(),
+            distFood,
+            gameState.getScore()
+        ]
+
         directionLetter = self.weka.predict(
                             "./models/classification/random-forest.model",
                             directionX,

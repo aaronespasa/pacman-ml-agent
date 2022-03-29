@@ -108,19 +108,26 @@ class BustersAgent(object):
     def chooseAction(self, gameState):
         "Action the PacMan takes"
         directionX = [...]
-        direction = self.weka.predict(
-                        "./models/classification/random-forest.model",
-                        directionX,
-                        "./data/present/training_tutorial1.arff")
-        # convert the direction into a proper direction
-        # ...
-
-        futureScoreX = [...]
-        futureScore = self.weka.predict(
-                        "./models/prediction/multilayer-perceptron.model",
-                        futureScoreX,
-                        "./data/future/training_tutorial1.arff")
-        return Directions.STOP
+        directionLetter = self.weka.predict(
+                            "./models/classification/random-forest.model",
+                            directionX,
+                            "./data/present/training_tutorial1.arff")
+        # convert the direction {N,S,W,E,X} into a proper direction
+        directionsMap = {
+            "N": Directions.NORTH,
+            "S": Directions.SOUTH,
+            "W": Directions.WEST,
+            "E": Directions.EAST,
+            "X": Directions.STOP
+        }
+        direction = directionsMap.get(directionLetter, Directions.STOP)
+        
+        #futureScoreX = [...]
+        # futureScore = self.weka.predict(
+        #                 "./models/prediction/multilayer-perceptron.model",
+        #                 futureScoreX,
+        #                 "./data/future/training_tutorial1.arff")
+        return direction
 
 class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
     "An agent controlled by the keyboard that displays beliefs about ghost positions."
@@ -128,7 +135,6 @@ class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
     def __init__(self, index = 0, inference = "KeyboardInference", ghostAgents = None):
         KeyboardAgent.__init__(self, index)
         BustersAgent.__init__(self, index, inference, ghostAgents)
-        self.countActions = 0
         self.countActions = 0
         self.nearestGhostPosition = tuple()
         self.nearestGhostDistance = float('inf')

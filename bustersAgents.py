@@ -106,6 +106,17 @@ class BustersAgent(object):
         "Updates beliefs, then chooses an action based on updated beliefs."
         return self.chooseAction(gameState)
 
+    def getPossibleDirections(self, legal):
+        possibleDirections = 0
+
+        for direction in legal:
+            if direction == Directions.NORTH: possibleDirections += 8
+            if direction == Directions.SOUTH: possibleDirections += 4
+            if direction == Directions.WEST: possibleDirections += 2
+            if direction == Directions.EAST: possibleDirections += 1
+
+        return possibleDirections
+
     def chooseAction(self, gameState):
         "Action the PacMan takes"
 
@@ -113,14 +124,8 @@ class BustersAgent(object):
         legal = [a for a in gameState.getLegalPacmanActions()]
 
         # "{N, S, W, E, X}" -> in binary format
-        self.possibleDirections = 0
-        for direction in legal:
-            # Directions.NORTH, Directions.EAST, Directions.SOUTH, Directions.WEST
-            if direction == Directions.NORTH: self.possibleDirections += 16
-            if direction == Directions.SOUTH: self.possibleDirections += 8
-            if direction == Directions.WEST: self.possibleDirections += 4
-            if direction == Directions.EAST: self.possibleDirections += 2
-            if direction == Directions.STOP: self.possibleDirections += 1
+        self.possibleDirections = self.getPossibleDirections(legal)
+        
         self.countActions = self.countActions + 1
 
         ####### Sort the ghosts based on the distance to the pacman #######
@@ -143,51 +148,45 @@ class BustersAgent(object):
         ###################################################################
 
         pacmanX, pacmanY = gameState.getPacmanPosition()
-        distFood = 0 if gameState.getDistanceNearestFood() == None else \
-                    gameState.getDistanceNearestFood()
-        
+
         # directionX = [
-        #     self.countActions,
         #     pacmanX,
         #     pacmanY,
         #     self.possibleDirections,
         #     ghostX,
         #     ghostY,
-        #     self.nearestGhostDistance,
-        #     gameState.getNumFood(),
-        #     distFood,
-        #     gameState.getScore()
+        #     self.nearestGhostDistance
         # ]
-
-        # directionLetter = self.weka.predict(
-        #                     "./models/classification/random-forest.model",
-        #                     directionX,
-        #                     "./data/present/training_tutorial1.arff")
-        
         directionX = [
             pacmanX,
             pacmanY,
             self.possibleDirections,
+            1,
+            3,
+            gameState.data.layout.width - 1,
+            gameState.data.layout.height - 1,
             ghostX,
             ghostY,
             self.nearestGhostDistance
         ]
+
+        print(directionX)
         directionLetter = self.weka.predict(
-                            "./models/classification_tests/j48.model",
+                            "./models/classification_tests/rf-xy.model",
                             directionX,
-                            "./training_tutorial1_samemap.arff")
+                            "./training_tutorial1.arff")
+        
         # convert the direction {N,S,W,E,X} into a proper direction
         directionsMap = {
             "N": Directions.NORTH,
             "S": Directions.SOUTH,
             "W": Directions.WEST,
-            "E": Directions.EAST,
-            "X": Directions.STOP
+            "E": Directions.EAST
         }
         direction = directionsMap.get(directionLetter, Directions.STOP)
 
         if direction not in legal:
-            return legal[0]
+            return legal[1]
         
         #futureScoreX = [...]
         # futureScore = self.weka.predict(
@@ -215,14 +214,7 @@ class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
         livingGhosts = gameState.getLivingGhosts()
         legal = [a for a in gameState.getLegalPacmanActions()]
         # "{N, S, W, E, X}" -> in binary format
-        self.possibleDirections = 0
-        for direction in legal:
-            # Directions.NORTH, Directions.EAST, Directions.SOUTH, Directions.WEST
-            if direction == Directions.NORTH: self.possibleDirections += 16
-            if direction == Directions.SOUTH: self.possibleDirections += 8
-            if direction == Directions.WEST: self.possibleDirections += 4
-            if direction == Directions.EAST: self.possibleDirections += 2
-            if direction == Directions.STOP: self.possibleDirections += 1
+        self.possibleDirections = self.getPossibleDirections(legal)
         self.countActions = self.countActions + 1
 
         ####### Sort the ghosts based on the distance to the pacman #######
@@ -249,22 +241,16 @@ class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
         # gameState.data.agentStates[0].getDirection()
         self.futureScore = gameState.getScore()
         if gameState.data.agentStates[0].getDirection() == "Stop":
-            self.directionTaken = "X"
+            self.directionTaken = self.legal[0][0]
         else:
             self.directionTaken = gameState.data.agentStates[0].getDirection()[0]
         
         return (
-            str(self.countActions) + "," + 
             ",".join(str(gameState.getPacmanPosition())[1:-1].split(", ")) + "," +
             str(self.possibleDirections) + "," +
             ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
             str(self.nearestGhostDistance) + "," +
-            str(gameState.getNumFood()) + "," +
-            str(
-                0 if gameState.getDistanceNearestFood() == None else
-                gameState.getDistanceNearestFood()
-            ) + "," +
-            str(gameState.getScore()) + ","
+            str(self.directionTaken) + "\n"
         )
     
     def printFutureData(self, gameState):
@@ -373,7 +359,8 @@ class BasicAgentAA(BustersAgent):
         self.countActions = 0
         self.nearestGhostPosition = tuple()
         self.nearestGhostDistance = float('inf')
-        self.possibleDirections = ""
+        self.possibleDirections = 0
+        self.legal = []
         
     ''' Example of counting something'''
     def countFood(self, gameState):
@@ -429,17 +416,10 @@ class BasicAgentAA(BustersAgent):
         
     def chooseAction(self, gameState):
         pacmanPosition = gameState.getPacmanPosition()
-        legal = [a for a in gameState.getLegalPacmanActions()]
+        self.legal = [a for a in gameState.getLegalPacmanActions()]
         livingGhosts = gameState.getLivingGhosts()
         
-        self.possibleDirections = 0
-        for direction in legal:
-            # Directions.NORTH, Directions.EAST, Directions.SOUTH, Directions.WEST
-            if direction == Directions.NORTH: self.possibleDirections += 16
-            if direction == Directions.SOUTH: self.possibleDirections += 8
-            if direction == Directions.WEST: self.possibleDirections += 4
-            if direction == Directions.EAST: self.possibleDirections += 2
-            if direction == Directions.STOP: self.possibleDirections += 1
+        self.possibleDirections = self.getPossibleDirections(self.legal)
         self.countActions = self.countActions + 1
 
         ####### Sort the ghosts based on the distance to the pacman #######
@@ -465,7 +445,7 @@ class BasicAgentAA(BustersAgent):
         ###################################################################
         if shortestDistance == 0:
             gameState.setGhostNotLiving(nearestGhostKey)
-            return Directions.STOP
+            return self.legal[0]
         ###################################################################
 
 
@@ -474,7 +454,7 @@ class BasicAgentAA(BustersAgent):
         bestStep = None
         bestStepValue = float('inf')
         for step in [Directions.NORTH, Directions.EAST, Directions.SOUTH, Directions.WEST]:
-            if step not in legal: continue
+            if step not in self.legal: continue
 
             newX, newY = Actions.getSuccessor(pacmanPosition, step)
             actualDistance = self.distancer.getDistance((newX, newY), nearestGhostPosition)
@@ -488,37 +468,34 @@ class BasicAgentAA(BustersAgent):
                 bestStepValue = actualDistance
                 bestStep = step
         ###################################################################
-
+        
         # If new distance > shortest distance, take the step that reduces that new distance
         return bestStep
 
     def printLineData(self, gameState):
         # gameState.data.agentStates[0].getDirection()
-        self.futureScore = gameState.getScore()
+        # self.futureScore = gameState.getScore()
         if gameState.data.agentStates[0].getDirection() == "Stop":
-            self.directionTaken = "X"
+            self.directionTaken = self.legal[0][0]
         else:
             self.directionTaken = gameState.data.agentStates[0].getDirection()[0]
         
         return (
-            # str(self.countActions) + "," + 
             ",".join(str(gameState.getPacmanPosition())[1:-1].split(", ")) + "," +
             str(self.possibleDirections) + "," +
             ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
+            str(1) + "," +
+            str(3) + "," +
+            str(gameState.data.layout.width - 1) + "," +
+            str(gameState.data.layout.height - 1) + "," +
             str(self.nearestGhostDistance) + "," +
-            # str(gameState.getNumFood()) + "," +
-            # str(
-            #     0 if gameState.getDistanceNearestFood() == None else
-            #     gameState.getDistanceNearestFood()
-            # ) + "," +
-            # str(gameState.getScore()) + ","
             str(self.directionTaken) + "\n"
         )
     
     def printFutureData(self, gameState):
         return (
             str(gameState.getScore()) + "," + 
-            # X: Stop, N: North, S: South, E: East, W: West
+            # N: North, S: South, E: East, W: West
             str(self.directionTaken) + "\n"
         )
     def getScoreFromAgent(self, gameState):

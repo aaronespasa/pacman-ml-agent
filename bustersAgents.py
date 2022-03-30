@@ -149,30 +149,33 @@ class BustersAgent(object):
 
         pacmanX, pacmanY = gameState.getPacmanPosition()
 
-        # directionX = [
-        #     pacmanX,
-        #     pacmanY,
-        #     self.possibleDirections,
-        #     ghostX,
-        #     ghostY,
-        #     self.nearestGhostDistance
-        # ]
+        # return (
+        #     ",".join(str(gameState.getPacmanPosition())[1:-1].split(", ")) + "," +
+        #     str(self.possibleDirections) + "," +
+        #     ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
+        #     str(self.nearestGhostDistance) + "," +
+        #     str(1) + "," +
+        #     str(3) + "," +
+        #     str(gameState.data.layout.width - 1) + "," +
+        #     str(gameState.data.layout.height - 1) + "," +
+        #     str(self.directionTaken) + "\n"
+        # )
+    
         directionX = [
             pacmanX,
             pacmanY,
             self.possibleDirections,
+            ghostX,
+            ghostY,
+            self.nearestGhostDistance,
             1,
             3,
             gameState.data.layout.width - 1,
             gameState.data.layout.height - 1,
-            ghostX,
-            ghostY,
-            self.nearestGhostDistance
         ]
 
-        print(directionX)
         directionLetter = self.weka.predict(
-                            "./models/classification_tests/rf-xy.model",
+                            "./models/classification_tests/rf.model",
                             directionX,
                             "./training_tutorial1.arff")
         
@@ -206,15 +209,16 @@ class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
         self.nearestGhostDistance = float('inf')
         self.possibleDirections = 0
         self.directionTaken = ""
+        self.legal = []
 
     def getAction(self, gameState):
         return BustersAgent.getAction(self, gameState)
 
     def chooseAction(self, gameState):
         livingGhosts = gameState.getLivingGhosts()
-        legal = [a for a in gameState.getLegalPacmanActions()]
+        self.legal = [a for a in gameState.getLegalPacmanActions()]
         # "{N, S, W, E, X}" -> in binary format
-        self.possibleDirections = self.getPossibleDirections(legal)
+        self.possibleDirections = self.getPossibleDirections(self.legal)
         self.countActions = self.countActions + 1
 
         ####### Sort the ghosts based on the distance to the pacman #######
@@ -250,14 +254,17 @@ class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
             str(self.possibleDirections) + "," +
             ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
             str(self.nearestGhostDistance) + "," +
-            str(self.directionTaken) + "\n"
+            str(1) + "," +
+            str(3) + "," +
+            str(gameState.data.layout.width - 1) + "," +
+            str(gameState.data.layout.height - 1) + ","
         )
-    
+
     def printFutureData(self, gameState):
         return (
-            str(gameState.getScore()) + "," + 
-            # X: Stop, N: North, S: South, E: East, W: West
-            str(self.directionTaken) + "\n"
+            # N: North, S: South, E: East, W: West
+            str(self.directionTaken) + "," +
+            str(gameState.getScore()) + "\n"
         )
     def getScoreFromAgent(self, gameState):
         return gameState.getScore()
@@ -447,7 +454,7 @@ class BasicAgentAA(BustersAgent):
             gameState.setGhostNotLiving(nearestGhostKey)
             return self.legal[0]
         ###################################################################
-
+        
 
         #######        Check which is the best step to take         #######
         ###################################################################
@@ -473,30 +480,30 @@ class BasicAgentAA(BustersAgent):
         return bestStep
 
     def printLineData(self, gameState):
-        # gameState.data.agentStates[0].getDirection()
-        # self.futureScore = gameState.getScore()
+        self.futureScore = gameState.getScore()
         if gameState.data.agentStates[0].getDirection() == "Stop":
             self.directionTaken = self.legal[0][0]
         else:
             self.directionTaken = gameState.data.agentStates[0].getDirection()[0]
         
+        # top left: (1, height-1)
+        # bottom right: (width-1, 3)
         return (
             ",".join(str(gameState.getPacmanPosition())[1:-1].split(", ")) + "," +
             str(self.possibleDirections) + "," +
             ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
+            str(self.nearestGhostDistance) + "," +
             str(1) + "," +
             str(3) + "," +
             str(gameState.data.layout.width - 1) + "," +
-            str(gameState.data.layout.height - 1) + "," +
-            str(self.nearestGhostDistance) + "," +
-            str(self.directionTaken) + "\n"
+            str(gameState.data.layout.height - 1) + ","
         )
     
     def printFutureData(self, gameState):
         return (
-            str(gameState.getScore()) + "," + 
             # N: North, S: South, E: East, W: West
-            str(self.directionTaken) + "\n"
+            str(self.directionTaken) + "," +
+            str(gameState.getScore()) + "\n"
         )
     def getScoreFromAgent(self, gameState):
         return gameState.getScore()

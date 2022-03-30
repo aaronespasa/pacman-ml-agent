@@ -703,11 +703,11 @@ class Game(object):
                 import bustersAgents
                 if isinstance(agent, bustersAgents.BasicAgentAA) or isinstance(agent, bustersAgents.BustersKeyboardAgent):
                     f = open(self.filename, "a")
-                    # self.score = agent.getScoreFromAgent(observation)
+                    self.score = agent.getScoreFromAgent(observation)
                     if os.path.getsize(self.filename) > 0:
                         # file not empty
-                        # if agent.getNumAction() > 1:
-                        #     f.write(agent.printFutureData(observation))
+                        if agent.getNumAction() > 1:
+                            f.write(agent.printFutureData(observation))
                         f.write(agent.printLineData(observation))
                     else:
                         # file empty -> insert arff header
@@ -721,7 +721,12 @@ class Game(object):
                             "ghostX":               "NUMERIC",
                             "ghostY":               "NUMERIC",
                             "nearestGhostDistance": "NUMERIC",
-                            "directionTaken":       "{N,S,W,E,X}"
+                            "minWidth":             "NUMERIC",
+                            "minHeight":            "NUMERIC",
+                            "maxWidth":             "NUMERIC",
+                            "maxWidth":             "NUMERIC",
+                            "directionTaken":       "{N,S,W,E}",
+                            "futureScore":          "NUMERIC",
                         }
 
                         for attrName, attrDataType in attributes.items():
@@ -774,6 +779,7 @@ class Game(object):
                     return
         self.display.finish()
         
-        # f = open(self.filename, "a")
-        # f.write(str(self.score) + "," + "X\n")
-        # f.close()
+        
+        f = open(self.filename, "a")
+        f.write("N,"+ f"{self.score}\n")
+        f.close()

@@ -148,18 +148,6 @@ class BustersAgent(object):
         ###################################################################
 
         pacmanX, pacmanY = gameState.getPacmanPosition()
-
-        # return (
-        #     ",".join(str(gameState.getPacmanPosition())[1:-1].split(", ")) + "," +
-        #     str(self.possibleDirections) + "," +
-        #     ",".join(str(self.nearestGhostPosition)[1:-1].split(", ")) + "," +
-        #     str(self.nearestGhostDistance) + "," +
-        #     str(1) + "," +
-        #     str(3) + "," +
-        #     str(gameState.data.layout.width - 1) + "," +
-        #     str(gameState.data.layout.height - 1) + "," +
-        #     str(self.directionTaken) + "\n"
-        # )
     
         directionX = [
             pacmanX,
@@ -175,9 +163,9 @@ class BustersAgent(object):
         ]
 
         directionLetter = self.weka.predict(
-                            "./models/classification_tests/rf.model",
+                            "./models/classification/random-forest.model",
                             directionX,
-                            "./training_tutorial1.arff")
+                            "./data/present/training_tutorial1.arff")
         
         # convert the direction {N,S,W,E,X} into a proper direction
         directionsMap = {

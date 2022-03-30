@@ -540,7 +540,7 @@ class Game(object):
         import io
         self.agentOutput = [io.StringIO() for agent in agents]
         self.score = 0
-        self.filename = "training_tutorial1.arff"
+        self.filename = "./data/raw/training_tutorial1.arff"
         
 
     def getProgress(self):
@@ -696,8 +696,6 @@ class Game(object):
                     self.unmute()
                     return
             else:
-                # primer set: que va a ser mejor en principio
-                # segundo set: que va a ser peor en principio
                 action = agent.getAction(observation)
                 
                 import bustersAgents
@@ -724,7 +722,7 @@ class Game(object):
                             "minWidth":             "NUMERIC",
                             "minHeight":            "NUMERIC",
                             "maxWidth":             "NUMERIC",
-                            "maxWidth":             "NUMERIC",
+                            "maxHeight":            "NUMERIC",
                             "directionTaken":       "{N,S,W,E}",
                             "futureScore":          "NUMERIC",
                         }

@@ -1,8 +1,3 @@
-"""
-If it works correctly for all files except the sixth one (training_tutorial1),
-comment the first five and leave the last one uncommented. Then, run this script
-again.
-"""
 import arff
 
 DATA_NAMES = [
@@ -15,36 +10,36 @@ DATA_NAMES = [
 ]
 
 # {N,S,W,E,X}
-binaryHashMap = {"N": 0, "S": 1, "W": 2, "E": 3, "X": 4}
+binaryHashMap = {"N": 0, "S": 1, "W": 2, "E": 3}
 
 def getRowString(
-    numActions,
     pacmanX,
     pacmanY,
     directionPossible,
     ghostX,
     ghostY,
     nearestGhostDistance,
-    numFood,
-    distFood,
-    score,
-    futureScore,
+    minWidth,
+    minHeight,
+    maxWidth,
+    maxHeight,
     directionTaken,
+    futureScore
 ):
     """
     Returns a string with the row of the arff file
     """
     row = ""
-    row += str(numActions) + ","
     row += str(pacmanX) + ","
     row += str(pacmanY) + ","
     row += str(directionPossible) + ","
     row += str(ghostX) + ","
     row += str(ghostY) + ","
     row += str(nearestGhostDistance) + ","
-    row += str(numFood) + ","
-    row += str(distFood) + ","
-    row += str(score) + ","
+    row += str(minWidth) + ","
+    row += str(minHeight) + ","
+    row += str(maxWidth) + ","
+    row += str(maxHeight) + ","
     row += str(binaryHashMap.get(directionTaken, 4)) + ","
     row += str(futureScore) + "\n"
     return row
@@ -60,108 +55,108 @@ f6 = open(f"./data/future/{DATA_NAMES[5]}.arff", "a")
 for row in arff.load(f"./data/raw/{DATA_NAMES[0]}.arff"):
     f1.write(
         getRowString(
-            row.numActions,
             row.pacmanX,
             row.pacmanY,
             row.directionPossible,
             row.ghostX,
             row.ghostY,
             row.nearestGhostDistance,
-            row.numFood,
-            row.distFood,
-            row.score,
-            row.futureScore,
+            row.minWidth,
+            row.minHeight,
+            row.maxWidth,
+            row.maxHeight,
             row.directionTaken,
+            row.futureScore
         )
     )
 
 for row in arff.load(f"./data/raw/{DATA_NAMES[1]}.arff"):
     f2.write(
         getRowString(
-            row.numActions,
             row.pacmanX,
             row.pacmanY,
             row.directionPossible,
             row.ghostX,
             row.ghostY,
             row.nearestGhostDistance,
-            row.numFood,
-            row.distFood,
-            row.score,
-            row.futureScore,
+            row.minWidth,
+            row.minHeight,
+            row.maxWidth,
+            row.maxHeight,
             row.directionTaken,
+            row.futureScore
         )
     )
 
 for row in arff.load(f"./data/raw/{DATA_NAMES[2]}.arff"):
     f3.write(
         getRowString(
-            row.numActions,
             row.pacmanX,
             row.pacmanY,
             row.directionPossible,
             row.ghostX,
             row.ghostY,
             row.nearestGhostDistance,
-            row.numFood,
-            row.distFood,
-            row.score,
-            row.futureScore,
+            row.minWidth,
+            row.minHeight,
+            row.maxWidth,
+            row.maxHeight,
             row.directionTaken,
+            row.futureScore
         )
     )
 
 for row in arff.load(f"./data/raw/{DATA_NAMES[3]}.arff"):
     f4.write(
         getRowString(
-            row.numActions,
             row.pacmanX,
             row.pacmanY,
             row.directionPossible,
             row.ghostX,
             row.ghostY,
             row.nearestGhostDistance,
-            row.numFood,
-            row.distFood,
-            row.score,
-            row.futureScore,
+            row.minWidth,
+            row.minHeight,
+            row.maxWidth,
+            row.maxHeight,
             row.directionTaken,
+            row.futureScore
         )
     )
 
 for row in arff.load(f"./data/raw/{DATA_NAMES[4]}.arff"):
     f5.write(
         getRowString(
-            row.numActions,
             row.pacmanX,
             row.pacmanY,
             row.directionPossible,
             row.ghostX,
             row.ghostY,
             row.nearestGhostDistance,
-            row.numFood,
-            row.distFood,
-            row.score,
-            row.futureScore,
+            row.minWidth,
+            row.minHeight,
+            row.maxWidth,
+            row.maxHeight,
             row.directionTaken,
+            row.futureScore
         )
     )
 
 for row in arff.load(f"./data/raw/{DATA_NAMES[5]}.arff"):
     f6.write(
         getRowString(
-            row.numActions,
             row.pacmanX,
             row.pacmanY,
             row.directionPossible,
             row.ghostX,
             row.ghostY,
             row.nearestGhostDistance,
-            row.numFood,
-            row.distFood,
-            row.score,
-            row.futureScore,
+            row.minWidth,
+            row.minHeight,
+            row.maxWidth,
+            row.maxHeight,
             row.directionTaken,
+            row.futureScore
         )
     )
 

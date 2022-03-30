@@ -6,7 +6,7 @@
 # Two agents: BasicAgentAA and BustersKeyboardAgent
 agentName="BasicAgentAA"
 
-for i in {1..5} ; do
+for i in {1..10} ; do
     python3 busters.py -g RandomGhost -p $agentName -l trickyClassic
     python3 busters.py -g RandomGhost -p $agentName -l newmap
     python3 busters.py -g RandomGhost -p $agentName -l testClassic

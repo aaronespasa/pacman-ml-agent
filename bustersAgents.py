@@ -181,7 +181,7 @@ class BustersAgent(object):
         
         #futureScoreX = [...]
         # futureScore = self.weka.predict(
-        #                 "./models/prediction/multilayer-perceptron.model",
+        #                 "./models/prediction/rep-tree.model",
         #                 futureScoreX,
         #                 "./data/future/training_tutorial1.arff")
         return direction

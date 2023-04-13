@@ -40,6 +40,7 @@ $ python pacman.py
 
 <h2 id="project-structure">Project Structure</h2>
 The project is organized into the following structure:
+
 ```bash
 pacman-ml-agent
 │

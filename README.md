@@ -6,17 +6,19 @@
 Welcome to the Pac-Man Agent project! The aim of this project is to create an intelligent Pac-Man agent using machine learning techniques, specifically classification and regression, to predict Pac-Man's actions and future scores. This repository contains all the necessary files and instructions to get started and understand the project.
 
 ## Table of Contents
-Overview
-Getting Started
-Project Structure
-Methodology
-Results
-Conclusions and Challenges
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#methodology">Methodology</a></li>
+<li><a href="#results">Results</a></li>
+<li><a href="#conclusions">Conclusions and Challenges</a></li>
+</ol>
 
-## Overview
+<h2 id="overview">Overview</h2>
 This project uses machine learning algorithms to create a Pac-Man agent that can play the game autonomously. The agent's actions are determined using a classification model, and its future score is predicted using a regression model. The main goal of this project is to develop an agent that can achieve a high score by following the optimal path to eat the ghosts while avoiding obstacles.
 
-## Getting Started
+<h2 id="getting-started">Getting Started</h2>
 
 To get started with the project, follow these steps:
 
@@ -36,7 +38,7 @@ pip install -r requirements.txt
 $ python pacman.py
 ```
 
-## Project Structure
+<h2 id="project-structure">Project Structure</h2>
 The project is organized into the following structure:
 ```bash
 pacman-ml-agent
@@ -72,7 +74,7 @@ pacman-ml-agent
 └── wekaI.py
 ```
 
-## Methodology
+<h2 id="methodology">Methodology</h2>
 The project methodology involves several stages:
 
 1. Data Collection: Game data is collected using various maps and saved in the .arff format.
@@ -82,7 +84,7 @@ The project methodology involves several stages:
 5. Model Selection: The best performing models are selected for implementation in the Pac-Man agent.
 6. Agent Implementation: The trained models are used to create an autonomous Pac-Man agent.
 
-## Results
+<h2 id="results">Results</h2>
 The project used various machine learning algorithms for classification and regression tasks. The best performing algorithms were:
 
 <ul>
@@ -95,7 +97,7 @@ The project used various machine learning algorithms for classification and regr
 
 The results were significantly improved (around 6%) after increasing the number of training instances.
 
-## Conclusions and Challenges
+<h2 id="conclusion">Conclusions and Challenges</h2>
 The main challenge faced during this project was identifying the most relevant attributes for training a generalizable Pac-Man agent. A large number of tests were performed to find the best combination of instances, maps, attributes, training sets, and test sets. Despite the changes, the best performing algorithms remained consistent throughout the experimentation process.
 
 To overcome this challenge, we iteratively refined the feature set and experimented with various machine learning algorithms, eventually settling on a set of features and models that produced an agent with reasonable gameplay behavior. However, there is still room for improvement, and further research could potentially result in a more advanced and adaptable Pac-Man agent.

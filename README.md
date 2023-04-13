@@ -94,3 +94,10 @@ The project used various machine learning algorithms for classification and regr
 </ul>
 
 The results were significantly improved (around 6%) after increasing the number of training instances.
+
+##Conclusions and Challenges
+The main challenge faced during this project was identifying the most relevant attributes for training a generalizable Pac-Man agent. A large number of tests were performed to find the best combination of instances, maps, attributes, training sets, and test sets. Despite the changes, the best performing algorithms remained consistent throughout the experimentation process.
+
+To overcome this challenge, we iteratively refined the feature set and experimented with various machine learning algorithms, eventually settling on a set of features and models that produced an agent with reasonable gameplay behavior. However, there is still room for improvement, and further research could potentially result in a more advanced and adaptable Pac-Man agent.
+
+In conclusion, this project demonstrates the potential of using machine learning techniques to create an autonomous Pac-Man agent. By carefully selecting the features and algorithms, we were able to develop an agent that can achieve a high score in the game. This project serves as a stepping stone for future research and development in the field of game AI and machine learning.
